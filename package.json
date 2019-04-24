@@ -1,0 +1,25 @@
+{
+  "name": "datocms-plugin-typed-list",
+  "version": "0.1.0",
+  "description": "Plugin for editing typed list in DatoCMS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stackbithq/datocms-plugin-typed-list.git"
+  },
+  "keywords": [
+    "datocms",
+    "datocms-plugin",
+    "field-editor",
+    "json-field"
+  ],
+  "author": "Stackbit",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stackbithq/datocms-plugin-typed-list/issues"
+  },
+  "homepage": "https://github.com/stackbithq/datocms-plugin-typed-list#readme"
+}
