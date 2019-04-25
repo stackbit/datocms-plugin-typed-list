@@ -15,9 +15,9 @@ function setFieldValue(plugin, value) {
 }
 
 function getFieldType(plugin) {
-    let type = _.get(plugin, 'parameters.type');
+    let type = _.get(plugin, 'parameters.instance.type');
     if (!_.includes(['string', 'number'], type)) {
-        console.error('illegal type "' + type + '" for datocms-plugin-typed-list')
+        console.error('illegal type "' + type + '" for datocms-plugin-typed-list');
         return 'string';
     }
     return type;
@@ -26,7 +26,7 @@ function getFieldType(plugin) {
 function getOptions(plugin) {
     let type = getFieldType(plugin);
     if (type === 'string') {
-        let options = _.get(plugin, 'parameters.options', '');
+        let options = _.get(plugin, 'parameters.instance.options', '');
         let optionsArr = _.chain(options).split(',').map(option => _.trim(option)).compact().value();
         return _.isEmpty(optionsArr) ? null : optionsArr;
     } else {
@@ -50,9 +50,14 @@ function resetList(list, listElm, plugin) {
         listElm.removeChild(listElm.firstChild);
     }
     _.forEach(list, item => {
-        listElm.appendChild(createListItem(item, listElm, list, plugin));
+        let liElm = createListItem(item, listElm, list, plugin);
+        listElm.appendChild(liElm);
     });
-    listElm.style.display = '';
+    if (_.isEmpty(list)) {
+        listElm.style.display = 'none';
+    } else {
+        listElm.style.display = '';
+    }
 }
 
 function createListItem(value, listElm, list, plugin) {
@@ -83,8 +88,6 @@ function addItem(inputElm, list, listElm, plugin, type, options) {
             if (_.isEmpty(options) || _.includes(options, value)) {
                 inputElm.value = '';
                 list.push(value);
-                listElm.appendChild(createListItem(value, listElm, list, plugin));
-                listElm.style.display = '';
                 setFieldValue(plugin, list);
             }
         } else if (type === 'number') {
@@ -92,8 +95,6 @@ function addItem(inputElm, list, listElm, plugin, type, options) {
             if (_.isNumber(number)) {
                 inputElm.value = '';
                 list.push(number);
-                listElm.appendChild(createListItem(value, listElm, list, plugin));
-                listElm.style.display = '';
                 setFieldValue(plugin, list);
             }
         }
@@ -103,11 +104,7 @@ function addItem(inputElm, list, listElm, plugin, type, options) {
 function removeItem(liElm, listElm, list, plugin) {
     let index = _.indexOf(listElm.childNodes, liElm);
     _.pullAt(list, [index]);
-    listElm.removeChild(liElm);
     setFieldValue(plugin, list);
-    if (listElm.childNodes.length === 0) {
-        listElm.style.display = 'none';
-    }
 }
 
 function init(plugin) {
@@ -149,17 +146,24 @@ function init(plugin) {
     });
 }
 
-if (_.isUndefined(DatoCmsPlugin)) {
+if (!_.isUndefined(DatoCmsPlugin) && window.parent !== window) {
     DatoCmsPlugin.init(init);
 } else {
     init({
+        callbacks: {},
         startAutoResizer: () => {},
-        addFieldChangeListener: () => {},
+        addFieldChangeListener: function(fieldPath, callback) {
+            this.callbacks[fieldPath] = callback;
+        },
         getFieldValue: () => JSON.stringify(["foo", "bar"]),
-        setFieldValue: () => {},
-        fieldPath: null,
+        setFieldValue: function(fieldPath, value) {
+            _.invoke(this.callbacks, fieldPath, [value]);
+        },
+        fieldPath: 'some_field',
         parameters: {
-            type: 'string',
+            instance: {
+                type: 'string'
+            }
         }
     });
 }
