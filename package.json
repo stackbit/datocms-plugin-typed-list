@@ -1,16 +1,16 @@
 {
-  "name": "datocms-plugin-typed-list",
+  "name": "@stackbit/datocms-plugin-typed-list",
   "homepage": "https://github.com/stackbithq/datocms-plugin-typed-list#readme",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Plugin for editing typed list (list of strings, enums, numbers) in DatoCMS using JSON field",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "files": ["public"],
+  "files": ["public", "docs"],
   "datoCmsPlugin": {
     "title": "Typed List Editor",
-    "previewImage": "docs/preview.gif",
+    "previewImage": "docs/editing-list.png",
     "entryPoint": "public/index.html",
     "fieldTypes": ["json"],
     "pluginType": "field_editor",
