@@ -1,7 +1,7 @@
 {
   "name": "@stackbit/datocms-plugin-typed-list",
   "homepage": "https://github.com/stackbithq/datocms-plugin-typed-list#readme",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Plugin for editing typed list (list of strings, enums, numbers) in DatoCMS using JSON field",
   "main": "index.js",
   "scripts": {
