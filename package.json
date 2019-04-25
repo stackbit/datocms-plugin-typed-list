@@ -1,10 +1,36 @@
 {
   "name": "datocms-plugin-typed-list",
+  "homepage": "https://github.com/stackbithq/datocms-plugin-typed-list#readme",
   "version": "0.1.0",
-  "description": "Plugin for editing typed list in DatoCMS",
+  "description": "Plugin for editing typed list (list of strings, enums, numbers) in DatoCMS using JSON field",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "datoCmsPlugin": {
+    "title": "Typed List Editor",
+    "previewImage": "docs/preview.gif",
+    "entryPoint": "public/index.html",
+    "fieldTypes": ["json"],
+    "pluginType": "field_editor",
+    "parameters": {
+      "global": [],
+      "instance": [{
+        "id": "type",
+        "label": "Type",
+        "hint": "The type of list items, possible values: 'string' or 'number'",
+        "type": "string",
+        "required": true,
+        "default": "string"
+      }, {
+        "id": "options",
+        "label": "Options",
+        "hint": "List of comma separated allowed values. Used when type is set to 'string'",
+        "type": "string",
+        "required": false,
+        "default": ""
+      }]
+    }
   },
   "repository": {
     "type": "git",
@@ -14,12 +40,12 @@
     "datocms",
     "datocms-plugin",
     "field-editor",
-    "json-field"
+    "json-field",
+    "typed-list"
   ],
   "author": "Stackbit",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/stackbithq/datocms-plugin-typed-list/issues"
-  },
-  "homepage": "https://github.com/stackbithq/datocms-plugin-typed-list#readme"
+  }
 }
