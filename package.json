@@ -7,6 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "files": ["public"],
   "datoCmsPlugin": {
     "title": "Typed List Editor",
     "previewImage": "docs/preview.gif",
