@@ -15,7 +15,7 @@ function setFieldValue(plugin, value) {
 }
 
 function getFieldType(plugin) {
-    let type = _.get(plugin, 'parameters.instance.type');
+    let type = _.get(plugin, 'parameters.instance.type', 'string');
     if (!_.includes(['string', 'number'], type)) {
         console.error('illegal type "' + type + '" for datocms-plugin-typed-list');
         return 'string';

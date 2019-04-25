@@ -21,7 +21,7 @@
         "label": "Type",
         "hint": "The type of list items, possible values: 'string' or 'number'",
         "type": "string",
-        "required": true,
+        "required": false,
         "default": "string"
       }, {
         "id": "options",
