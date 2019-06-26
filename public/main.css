@@ -13,7 +13,7 @@ ul#list {
 ul#list li {
     border-bottom: 1px solid #f0f0f0;
     display: flex;
-    height: 32px;
+    min-height: 36px;
     align-items: center;
 }
 
@@ -23,7 +23,30 @@ ul#list li:last-child {
 
 ul#list li .item-value {
     flex: 1 1 auto;
-    padding: 0 8px;
+    padding: 10px 0;
+    cursor: pointer;
+}
+
+ul#list li .edit-controls {
+    flex: 1 1 auto;
+    position: relative;
+}
+
+ul#list li .edit-input {
+    width: 100%;
+    border: 0;
+    font-size: 16px;
+    padding-right: 40px;
+    box-sizing: border-box;
+}
+
+ul#list li .edit-button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #777;
 }
 
 ul#list li .remove-button {
@@ -33,10 +56,26 @@ ul#list li .remove-button {
     width: 32px;
     cursor: pointer;
     text-align: center;
+    padding-right: 5px;
 }
 
 ul#list li .remove-button .fas {
     vertical-align: bottom;
+    color: #777;
+}
+
+ul#list li .drag-handle {
+    padding: 0 16px;
+    cursor: move;
+    color: #777;
+}
+
+ul#list li.moving {
+    background-color: #c8effb;
+}
+
+ul#list.is-dragging {
+    cursor: move;
 }
 
 .inputLabel {
