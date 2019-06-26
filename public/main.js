@@ -117,7 +117,7 @@ function parentElement(el, sel) {
     return null;
 }
 
-function initReorder(list, listElm, plugin) {
+function initReorder(listElm, plugin) {
     listElm.addEventListener('dragstart', handleDrag);
     listElm.addEventListener('dragover', handleDrag);
     listElm.addEventListener('dragenter', handleDrag);
@@ -165,6 +165,7 @@ function initReorder(list, listElm, plugin) {
                 currentDraggedEl.classList.remove('moving');
                 currentDraggedEl.parentElement.classList.remove('is-dragging');
 
+                var list = getFieldValue(plugin);
                 var newIndex = _.indexOf(currentDraggedEl.parentElement.childNodes, currentDraggedEl);
                 var el = list[currentDraggedElIndex];
 
@@ -197,7 +198,7 @@ function init(plugin) {
     }
 
     resetList(list, listElm, plugin);
-    initReorder(list, listElm, plugin);
+    initReorder(listElm, plugin);
 
     if (type === 'number') {
         inputElm.type = 'number';
@@ -223,14 +224,16 @@ function init(plugin) {
 if (!_.isUndefined(DatoCmsPlugin) && window.parent !== window) {
     DatoCmsPlugin.init(init);
 } else {
+    var list = JSON.stringify(["foo", "bar"]);
     init({
         callbacks: {},
         startAutoResizer: () => {},
         addFieldChangeListener: function(fieldPath, callback) {
             this.callbacks[fieldPath] = callback;
         },
-        getFieldValue: () => JSON.stringify(["foo", "bar"]),
+        getFieldValue: () => list,
         setFieldValue: function(fieldPath, value) {
+            list = value;
             _.invoke(this.callbacks, fieldPath, [value]);
         },
         fieldPath: 'some_field',
