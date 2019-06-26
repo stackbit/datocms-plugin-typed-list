@@ -6,7 +6,7 @@ function deserializeValue(value) {
 }
 
 function getFieldValue(plugin) {
-    const fieldValue = plugin.getFieldValue(plugin.fieldPath);
+    var fieldValue = plugin.getFieldValue(plugin.fieldPath);
     return deserializeValue(fieldValue);
 }
 
@@ -15,7 +15,7 @@ function setFieldValue(plugin, value) {
 }
 
 function getFieldType(plugin) {
-    let type = _.get(plugin, 'parameters.instance.type', 'string');
+    var type = _.get(plugin, 'parameters.instance.type', 'string');
     if (!_.includes(['string', 'number'], type)) {
         console.error('illegal type "' + type + '" for datocms-plugin-typed-list');
         return 'string';
@@ -24,10 +24,10 @@ function getFieldType(plugin) {
 }
 
 function getOptions(plugin) {
-    let type = getFieldType(plugin);
+    var type = getFieldType(plugin);
     if (type === 'string') {
-        let options = _.get(plugin, 'parameters.instance.options', '');
-        let optionsArr = _.chain(options).split(',').map(option => _.trim(option)).compact().value();
+        var options = _.get(plugin, 'parameters.instance.options', '');
+        var optionsArr = _.chain(options).split(',').map(option => _.trim(option)).compact().value();
         return _.isEmpty(optionsArr) ? null : optionsArr;
     } else {
         return null;
@@ -38,7 +38,7 @@ function showSelect(options, inputElm, selectElm, selectWrapperElm) {
     inputElm.style.display = 'none';
     selectWrapperElm.style.display = '';
     _.forEach([''].concat(options), option => {
-        let optionElm = document.createElement('option');
+        var optionElm = document.createElement('option');
         optionElm.name = option;
         optionElm.appendChild(document.createTextNode(option));
         selectElm.appendChild(optionElm);
@@ -50,7 +50,7 @@ function resetList(list, listElm, plugin) {
         listElm.removeChild(listElm.firstChild);
     }
     _.forEach(list, item => {
-        let liElm = createListItem(item, listElm, list, plugin);
+        var liElm = createListItem(item, listElm, list, plugin);
         listElm.appendChild(liElm);
     });
     if (_.isEmpty(list)) {
@@ -60,19 +60,78 @@ function resetList(list, listElm, plugin) {
     }
 }
 
+function createListEditControls(liElm, span, value, plugin) {
+    var editControls = document.createElement('div');
+    var editInput = document.createElement('input');
+    var editButton = document.createElement('span');
+    var editButtonIcon = document.createElement('i');
+
+    editControls.style.display = 'none';
+    editControls.className = 'edit-controls';
+    editButtonIcon.className = 'fas fa-check';
+    editInput.className = 'edit-input';
+    editButton.className = 'edit-button';
+
+    editControls.appendChild(editInput);
+    editControls.appendChild(editButton);
+    editButton.appendChild(editButtonIcon);
+
+    span.addEventListener('click', function() {
+        editInput.style.height = span.parentElement.clientHeight + 'px';
+        span.style.display = 'none';
+        editControls.style.display = 'block';
+        editInput.value = value;
+        editInput.focus();
+    });
+
+    var commitEdit = function() {
+        var value = editInput.value.trim();
+        if (value) {
+            var list = getFieldValue(plugin);
+            editItem(liElm, liElm.parentElement, list, value, plugin);
+        }
+        editControls.style.display = 'none';
+        span.style.display = 'block';
+    };
+
+    editButton.addEventListener('click', commitEdit);
+
+    editInput.addEventListener("keyup", function(event) {
+        if ((event.keyCode === 13 || event.key === 'Enter')) {
+            commitEdit();
+        }
+        if ((event.keyCode === 27 || event.key === 'Escape')) {
+            editControls.style.display = 'none';
+            span.style.display = 'block';
+        }
+    });
+
+    return editControls;
+}
+
 function createListItem(value, listElm, list, plugin) {
-    let liElm = document.createElement('li');
-    let buttonElm = document.createElement('span');
-    let removeIcon = document.createElement('i');
-    let span = document.createElement('span');
-    let textNode = document.createTextNode(value);
+    var liElm = document.createElement('li');
+    var buttonElm = document.createElement('span');
+    var removeIcon = document.createElement('i');
+    var dragContainer = document.createElement('span');
+    var dragIcon = document.createElement('i');
+    var span = document.createElement('span');
+    var textNode = document.createTextNode(value);
+    var editControls = createListEditControls(liElm, span, value, plugin);
+
     span.className = 'item-value';
     buttonElm.className = 'remove-button';
-    removeIcon.className = 'fas fa-times fa-lg';
+    removeIcon.className = 'fas fa-times';
+    dragContainer.className = 'drag-handle';
+    dragIcon.className = 'fas fa-grip-lines';
+    dragContainer.appendChild(dragIcon);
     buttonElm.appendChild(removeIcon);
     span.appendChild(textNode);
+
     liElm.setAttribute('draggable', 'true');
+    liElm.appendChild(dragContainer);
     liElm.appendChild(span);
+    liElm.append(editControls);
     liElm.appendChild(buttonElm);
 
     buttonElm.addEventListener('click', function() {
@@ -83,7 +142,7 @@ function createListItem(value, listElm, list, plugin) {
 }
 
 function addItem(inputElm, list, listElm, plugin, type, options) {
-    let value = inputElm.value;
+    var value = inputElm.value;
     if (value !== '') {
         if (type === 'string') {
             if (_.isEmpty(options) || _.includes(options, value)) {
@@ -92,7 +151,7 @@ function addItem(inputElm, list, listElm, plugin, type, options) {
                 setFieldValue(plugin, list);
             }
         } else if (type === 'number') {
-            let number = _.toNumber(value);
+            var number = _.toNumber(value);
             if (_.isNumber(number)) {
                 inputElm.value = '';
                 list.push(number);
@@ -103,8 +162,14 @@ function addItem(inputElm, list, listElm, plugin, type, options) {
 }
 
 function removeItem(liElm, listElm, list, plugin) {
-    let index = _.indexOf(listElm.childNodes, liElm);
+    var index = _.indexOf(listElm.childNodes, liElm);
     _.pullAt(list, [index]);
+    setFieldValue(plugin, list);
+}
+
+function editItem(liElm, listElm, list, value, plugin) {
+    var index = _.indexOf(listElm.childNodes, liElm);
+    list[index] = value;
     setFieldValue(plugin, list);
 }
 
@@ -184,14 +249,14 @@ function init(plugin) {
 
     plugin.startAutoResizer();
 
-    let type = getFieldType(plugin);
-    let options = getOptions(plugin);
-    let list = getFieldValue(plugin);
-    let inputElm = document.getElementById('itemInput');
-    let selectElm = document.getElementById('optionSelect');
-    let selectWrapperElm = document.getElementById('selectWrapper');
-    let listElm = document.getElementById('list');
-    let addItemButtonElm = document.getElementById('addItemButton');
+    var type = getFieldType(plugin);
+    var options = getOptions(plugin);
+    var list = getFieldValue(plugin);
+    var inputElm = document.getElementById('itemInput');
+    var selectElm = document.getElementById('optionSelect');
+    var selectWrapperElm = document.getElementById('selectWrapper');
+    var listElm = document.getElementById('list');
+    var addItemButtonElm = document.getElementById('addItemButton');
 
     if (!_.isEmpty(options)) {
         showSelect(options, inputElm, selectElm, selectWrapperElm);
@@ -210,7 +275,7 @@ function init(plugin) {
     });
 
     addItemButtonElm.addEventListener('click', function() {
-        let formElement = _.isEmpty(options) ? inputElm : selectElm;
+        var formElement = _.isEmpty(options) ? inputElm : selectElm;
         addItem(formElement, list, listElm, plugin, type, options);
     });
 
