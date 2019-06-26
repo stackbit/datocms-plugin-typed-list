@@ -71,6 +71,7 @@ function createListItem(value, listElm, list, plugin) {
     removeIcon.className = 'fas fa-times fa-lg';
     buttonElm.appendChild(removeIcon);
     span.appendChild(textNode);
+    liElm.setAttribute('draggable', 'true');
     liElm.appendChild(span);
     liElm.appendChild(buttonElm);
 
@@ -107,6 +108,77 @@ function removeItem(liElm, listElm, list, plugin) {
     setFieldValue(plugin, list);
 }
 
+function parentElement(el, sel) {
+    do {
+        if (el.matches(sel)) {
+            return el;
+        }
+    } while (el = el.parentElement);
+    return null;
+}
+
+function initReorder(list, listElm, plugin) {
+    listElm.addEventListener('dragstart', handleDrag);
+    listElm.addEventListener('dragover', handleDrag);
+    listElm.addEventListener('dragenter', handleDrag);
+    listElm.addEventListener('dragend', handleDrag);
+
+    var currentDraggedEl = null;
+    var currentDraggedElIndex = null;
+
+    function handleDrag(e) {
+        var target = parentElement(e.target, 'li');
+
+        switch (e.type) {
+            case 'dragstart':
+                currentDraggedEl = target;
+                currentDraggedEl.parentElement.classList.add('is-dragging');
+                currentDraggedElIndex = _.indexOf(currentDraggedEl.parentElement.childNodes, currentDraggedEl);
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', currentDraggedEl.textContent);
+                setTimeout(function() {
+                    currentDraggedEl.classList.add('moving');
+                });
+                break;
+
+            case 'dragover':
+                if (e.preventDefault) {
+                    e.preventDefault();
+                }
+                e.dataTransfer.dropEffect = 'move';
+                return false;
+
+            case 'dragenter':
+                if (!currentDraggedEl) {
+                    return;
+                }
+                if (target && target !== currentDraggedEl) {
+                    var children = [].slice.call(target.parentElement.children);
+                    var isToBottom = children.indexOf(currentDraggedEl) < children.indexOf(target);
+
+                    currentDraggedEl.parentElement.removeChild(currentDraggedEl);
+                    target.parentElement.insertBefore(currentDraggedEl, isToBottom ? target.nextSibling : (target.previousSibling || target));
+                }
+                break;
+
+            case 'dragend':
+                currentDraggedEl.classList.remove('moving');
+                currentDraggedEl.parentElement.classList.remove('is-dragging');
+
+                var newIndex = _.indexOf(currentDraggedEl.parentElement.childNodes, currentDraggedEl);
+                var el = list[currentDraggedElIndex];
+
+                list.splice(currentDraggedElIndex, 1);
+                list.splice(newIndex, 0, el);
+
+                setFieldValue(plugin, list);
+
+                currentDraggedEl = null;
+                break;
+        }
+    }
+}
+
 function init(plugin) {
 
     plugin.startAutoResizer();
@@ -123,7 +195,9 @@ function init(plugin) {
     if (!_.isEmpty(options)) {
         showSelect(options, inputElm, selectElm, selectWrapperElm);
     }
+
     resetList(list, listElm, plugin);
+    initReorder(list, listElm, plugin);
 
     if (type === 'number') {
         inputElm.type = 'number';

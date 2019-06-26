@@ -16,6 +16,5 @@ Example:
 ![Editing options](docs/editing-options.png)
 
 TODOs:
-- rearange items
 - convert to React
 - add more types (color, url, etc.)

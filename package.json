@@ -7,30 +7,38 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "files": ["public", "docs"],
+  "files": [
+    "public",
+    "docs"
+  ],
   "datoCmsPlugin": {
     "title": "Typed List Editor",
     "previewImage": "docs/editing-list.png",
     "entryPoint": "public/index.html",
-    "fieldTypes": ["json"],
+    "fieldTypes": [
+      "json"
+    ],
     "pluginType": "field_editor",
     "parameters": {
       "global": [],
-      "instance": [{
-        "id": "type",
-        "label": "Type",
-        "hint": "The type of list items, possible values: 'string' or 'number'",
-        "type": "string",
-        "required": false,
-        "default": "string"
-      }, {
-        "id": "options",
-        "label": "Options",
-        "hint": "List of comma separated allowed values. Used when type is set to 'string'",
-        "type": "string",
-        "required": false,
-        "default": ""
-      }]
+      "instance": [
+        {
+          "id": "type",
+          "label": "Type",
+          "hint": "The type of list items, possible values: 'string' or 'number'",
+          "type": "string",
+          "required": false,
+          "default": "string"
+        },
+        {
+          "id": "options",
+          "label": "Options",
+          "hint": "List of comma separated allowed values. Used when type is set to 'string'",
+          "type": "string",
+          "required": false,
+          "default": ""
+        }
+      ]
     }
   },
   "repository": {

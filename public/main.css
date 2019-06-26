@@ -39,6 +39,14 @@ ul#list li .remove-button .fas {
     vertical-align: bottom;
 }
 
+ul#list li.moving {
+    background-color: #c8effb;
+}
+
+ul#list.is-dragging {
+    cursor: move;
+}
+
 .inputLabel {
     color: #34363a;
     font-size: 16px;
