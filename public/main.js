@@ -64,11 +64,14 @@ function createListEditControls(liElm, span, value, plugin) {
     var editControls = document.createElement('div');
     var editInput = document.createElement('input');
     var editButton = document.createElement('span');
-    var editButtonIcon = document.createElement('i');
+    var editButtonIcon = document.createElement('img');
 
     editControls.style.display = 'none';
     editControls.className = 'edit-controls';
-    editButtonIcon.className = 'fas fa-check';
+    editButtonIcon.className = 'edit-icon';
+    editButtonIcon.src="check-solid.svg";
+    editButtonIcon.height=iconSize;
+    editButtonIcon.width=iconSize;
     editInput.className = 'edit-input';
     editButton.className = 'edit-button';
 
@@ -109,6 +112,8 @@ function createListEditControls(liElm, span, value, plugin) {
     return editControls;
 }
 
+let iconSize = 24;
+
 function createListItem(value, listElm, list, plugin) {
     var liElm = document.createElement('li');
     var buttonElm = document.createElement('span');
@@ -119,7 +124,6 @@ function createListItem(value, listElm, list, plugin) {
     var textNode = document.createTextNode(value);
     var editControls = createListEditControls(liElm, span, value, plugin);
 
-    var iconSize = 24;
     span.className = 'item-value';
     buttonElm.className = 'remove-button';
     removeIcon.className = 'remove-icon';
