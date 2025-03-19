@@ -112,18 +112,25 @@ function createListEditControls(liElm, span, value, plugin) {
 function createListItem(value, listElm, list, plugin) {
     var liElm = document.createElement('li');
     var buttonElm = document.createElement('span');
-    var removeIcon = document.createElement('i');
+    var removeIcon = document.createElement('img');
     var dragContainer = document.createElement('span');
-    var dragIcon = document.createElement('i');
+    var dragIcon = document.createElement('img');
     var span = document.createElement('span');
     var textNode = document.createTextNode(value);
     var editControls = createListEditControls(liElm, span, value, plugin);
 
+    var iconSize = 24;
     span.className = 'item-value';
     buttonElm.className = 'remove-button';
-    removeIcon.className = 'fas fa-times';
+    removeIcon.className = 'remove-icon';
+    removeIcon.src = "xmark-solid.svg";
+    removeIcon.width = iconSize;
+    removeIcon.height = iconSize;
     dragContainer.className = 'drag-handle';
-    dragIcon.className = 'fas fa-grip-lines';
+    dragIcon.className = 'drag-icon';
+    dragIcon.src = "grip-lines-solid.svg";
+    dragIcon.width = iconSize;
+    dragIcon.height = iconSize;
     dragContainer.appendChild(dragIcon);
     buttonElm.appendChild(removeIcon);
     span.appendChild(textNode);

@@ -125,3 +125,7 @@ select#optionSelect {
     align-items: center;
     justify-content: center;
 }
+
+.drag-icon, .remove-icon {
+    vertical-align: text-bottom;
+}
