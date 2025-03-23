@@ -64,11 +64,14 @@ function createListEditControls(liElm, span, value, plugin) {
     var editControls = document.createElement('div');
     var editInput = document.createElement('input');
     var editButton = document.createElement('span');
-    var editButtonIcon = document.createElement('i');
+    var editButtonIcon = document.createElement('img');
 
     editControls.style.display = 'none';
     editControls.className = 'edit-controls';
-    editButtonIcon.className = 'fas fa-check';
+    editButtonIcon.className = 'edit-icon';
+    editButtonIcon.src="check-solid.svg";
+    editButtonIcon.height=iconSize;
+    editButtonIcon.width=iconSize;
     editInput.className = 'edit-input';
     editButton.className = 'edit-button';
 
@@ -109,21 +112,29 @@ function createListEditControls(liElm, span, value, plugin) {
     return editControls;
 }
 
+let iconSize = 24;
+
 function createListItem(value, listElm, list, plugin) {
     var liElm = document.createElement('li');
     var buttonElm = document.createElement('span');
-    var removeIcon = document.createElement('i');
+    var removeIcon = document.createElement('img');
     var dragContainer = document.createElement('span');
-    var dragIcon = document.createElement('i');
+    var dragIcon = document.createElement('img');
     var span = document.createElement('span');
     var textNode = document.createTextNode(value);
     var editControls = createListEditControls(liElm, span, value, plugin);
 
     span.className = 'item-value';
     buttonElm.className = 'remove-button';
-    removeIcon.className = 'fas fa-times';
+    removeIcon.className = 'remove-icon';
+    removeIcon.src = "xmark-solid.svg";
+    removeIcon.width = iconSize;
+    removeIcon.height = iconSize;
     dragContainer.className = 'drag-handle';
-    dragIcon.className = 'fas fa-grip-lines';
+    dragIcon.className = 'drag-icon';
+    dragIcon.src = "grip-lines-solid.svg";
+    dragIcon.width = iconSize;
+    dragIcon.height = iconSize;
     dragContainer.appendChild(dragIcon);
     buttonElm.appendChild(removeIcon);
     span.appendChild(textNode);
